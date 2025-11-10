@@ -125,88 +125,173 @@ WHERE cost_price > 50 AND quantity < 100;
 
 
 **Question 4**
----
--- Paste Question 4 here
+
+Write a SQL statement to Update the reorder level to 20 where the quantity in stock is less than 10 and product category is 'Snacks' in the products table.
+
+Products table
+
+---------------
+product_id
+product_name
+category
+cost_price
+sell_price
+reorder_lvl
+quantity
+supplier_id
 
 ```sql
--- Paste your SQL code below for Question 4
+
+UPDATE Products
+SET reorder_lvl = 20
+WHERE quantity < 10 AND category = 'Snacks';
+
 ```
 
 **Output:**
 
-![Output4](output.png)
+<img width="1234" height="665" alt="image" src="https://github.com/user-attachments/assets/9dc428fe-6f06-4c68-b5ec-583873876764" />
 
 **Question 5**
----
--- Paste Question 5 here
+
+Change the supplier name to upper case where contact person contains ' Singh' in suppliers table.
+
+name               type
+-----------------  ---------------
+supplier_id        INT
+supplier_name      VARCHAR(100)
+contact_person     VARCHAR(100)
+phone_number       VARCHAR(20)
+email              VARCHAR(100)
+address            VARCHAR(250)
 
 ```sql
--- Paste your SQL code below for Question 5
+
+UPDATE suppliers
+SET supplier_name = UPPER(supplier_name)
+WHERE contact_person LIKE '%Singh%';
+
 ```
 
 **Output:**
 
-![Output5](output.png)
+<img width="1236" height="447" alt="image" src="https://github.com/user-attachments/assets/926d4119-2bcb-4cf4-982c-0360bd34c3e4" />
 
 **Question 6**
----
--- Paste Question 6 here
+
+Write a SQL query to Delete customers with 'CUST_COUNTRY' 'UK' and 'WORKING_AREA' 'London' whose 'GRADE' is less than 3
+
+Sample table: Customer
+
+| CUST_CODE | CUST_NAME | CUST_CITY | WORKING_AREA | CUST_COUNTRY | GRADE | OPENING_AMT | RECEIVE_AMT | PAYMENT_AMT | OUTSTANDING_AMT | PHONE_NO | AGENT_CODE |
+|------------|------------|------------|----------------|----------------|--------|----------------|----------------|----------------|------------------|--------------|--------------|
+| C00013 | Holmes | London | London | UK | 2 | 6000.00 | 5000.00 | 7000.00 | 4000.00 | BBBBBBB | A003 |
+| C00001 | Micheal | New York | New York | USA | 2 | 3000.00 | 5000.00 | 2000.00 | 6000.00 | CCCCCCC | A008 |
+| C00020 | Albert | New York | New York | USA | 3 | 5000.00 | 7000.00 | 6000.00 | 6000.00 | BBBBSBB | A008 |
+
 
 ```sql
--- Paste your SQL code below for Question 6
+
+DELETE FROM Customer
+WHERE CUST_COUNTRY = 'UK' AND WORKING_AREA = 'London' AND GRADE < 3;
+
 ```
 
 **Output:**
 
-![Output6](output.png)
+<img width="1235" height="565" alt="image" src="https://github.com/user-attachments/assets/8730f23f-94ac-4032-ac79-ad3ef9fe9ab3" />
 
 **Question 7**
----
--- Paste Question 7 here
+
+Write a SQL query to delete a specific doctor from Doctors table whose ID is 1.
+
+Sample table: Doctors
+
+attributes : doctor_id, first_name, last_name, specialization
 
 ```sql
--- Paste your SQL code below for Question 7
+
+DELETE FROM Doctors
+WHERE doctor_id = 1;
+
 ```
 
 **Output:**
 
-![Output7](output.png)
+<img width="1235" height="353" alt="image" src="https://github.com/user-attachments/assets/82f86ac4-b72a-4518-a520-83924f992264" />
 
 **Question 8**
----
--- Paste Question 8 here
+
+Write a SQL query to Delete customers with 'GRADE' 2 and 'CUST_NAME' starting with 'M', and whose 'PAYMENT_AMT' is less than 3000
+
+Sample table: Customer
+
+| CUST_CODE | CUST_NAME | CUST_CITY | WORKING_AREA | CUST_COUNTRY | GRADE | OPENING_AMT | RECEIVE_AMT | PAYMENT_AMT | OUTSTANDING_AMT | PHONE_NO | AGENT_CODE |
+|------------|------------|------------|----------------|----------------|--------|----------------|----------------|----------------|------------------|--------------|--------------|
+| C00013 | Holmes | London | London | UK | 2 | 6000.00 | 5000.00 | 7000.00 | 4000.00 | BBBBBBB | A003 |
+| C00001 | Micheal | New York | New York | USA | 2 | 3000.00 | 5000.00 | 2000.00 | 6000.00 | CCCCCCC | A008 |
+| C00020 | Albert | New York | New York | USA | 3 | 5000.00 | 7000.00 | 6000.00 | 6000.00 | BBBBSBB | A008 |
+
 
 ```sql
--- Paste your SQL code below for Question 8
+
+DELETE FROM Customer
+WHERE GRADE = 2 AND CUST_NAME LIKE '%M%' AND PAYMENT_AMT < 3000;
+
 ```
 
 **Output:**
 
-![Output8](output.png)
+<img width="1233" height="487" alt="image" src="https://github.com/user-attachments/assets/ddd01495-1e61-4956-a560-b55a94ff041a" />
 
 **Question 9**
----
--- Paste Question 9 here
+
+Write a SQL query to Delete customers from 'customer' table where 'GRADE' is odd.
+
+Sample table: Customer
+
+| CUST_CODE | CUST_NAME | CUST_CITY | WORKING_AREA | CUST_COUNTRY | GRADE | OPENING_AMT | RECEIVE_AMT | PAYMENT_AMT | OUTSTANDING_AMT | PHONE_NO | AGENT_CODE |
+|------------|------------|------------|----------------|----------------|--------|----------------|----------------|----------------|------------------|--------------|--------------|
+| C00013 | Holmes | London | London | UK | 2 | 6000.00 | 5000.00 | 7000.00 | 4000.00 | BBBBBBB | A003 |
+| C00001 | Micheal | New York | New York | USA | 2 | 3000.00 | 5000.00 | 2000.00 | 6000.00 | CCCCCCC | A008 |
+| C00020 | Albert | New York | New York | USA | 3 | 5000.00 | 7000.00 | 6000.00 | 6000.00 | BBBBSBB | A008 |
+
 
 ```sql
--- Paste your SQL code below for Question 9
+
+DELETE FROM Customer
+WHERE GRADE % 2 = 1;
+
+
 ```
 
 **Output:**
 
-![Output9](output.png)
+<img width="1235" height="520" alt="image" src="https://github.com/user-attachments/assets/5650922c-47d1-4694-91be-ff40c6ab77bc" />
 
 **Question 10**
----
--- Paste Question 10 here
+
+Write a SQL query to Delete customers from 'customer' table where 'CUST_NAME' has exactly 6 characters.
+
+Sample table: Customer
+
+| CUST_CODE | CUST_NAME | CUST_CITY | WORKING_AREA | CUST_COUNTRY | GRADE | OPENING_AMT | RECEIVE_AMT | PAYMENT_AMT | OUTSTANDING_AMT | PHONE_NO | AGENT_CODE |
+|------------|------------|------------|----------------|----------------|--------|----------------|----------------|----------------|------------------|--------------|--------------|
+| C00013 | Holmes | London | London | UK | 2 | 6000.00 | 5000.00 | 7000.00 | 4000.00 | BBBBBBB | A003 |
+| C00001 | Micheal | New York | New York | USA | 2 | 3000.00 | 5000.00 | 2000.00 | 6000.00 | CCCCCCC | A008 |
+| C00020 | Albert | New York | New York | USA | 3 | 5000.00 | 7000.00 | 6000.00 | 6000.00 | BBBBSBB | A008 |
+
 
 ```sql
--- Paste your SQL code below for Question 10
+
+DELETE FROM Customer
+WHERE LENGTH(CUST_NAME) = 6;
+
 ```
 
 **Output:**
 
-![Output10](output.png)
+<img width="1232" height="834" alt="image" src="https://github.com/user-attachments/assets/f36c1803-e1d4-4562-8ba8-c313132e73f1" />
 
 ## RESULT
 Thus, the SQL queries to implement DML commands have been executed successfully.
