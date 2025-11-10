@@ -46,40 +46,83 @@ Used to retrieve records from a table.
 SELECT column1, column2 FROM table_name WHERE condition;
 ```
 **Question 1**
---
--- Paste Question 1 here
+
+Write a SQL statement to Update the per_unit_price to 25 and total_price accordingly in purchases table where purchase_date is '2022-08-15' and product_id is 12.
 
 ```sql
--- Paste your SQL code below for Question 1
+
+UPDATE purchases
+SET per_unit_price = 25
+WHERE purchase_date = '2022-08-15' AND product_id = 12;
+
+UPDATE purchases
+SET total_price = quantity * per_unit_price
+WHERE purchase_date = '2022-08-15' AND product_id = 12;
+
 ```
 
 **Output:**
 
-![Output1](output.png)
+<img width="1233" height="615" alt="image" src="https://github.com/user-attachments/assets/45d98aa5-6da5-45e6-83c2-958b7f667eb3" />
+
 
 **Question 2**
----
--- Paste Question 2 here
+
+Write a SQL statement to Increase quantity of all products by 10% to adjust for surplus stock counted
+
+Products table
+
+---------------
+product_id
+product_name
+category
+cost_price
+sell_price
+reorder_lvl
+quantity
+supplier_id
 
 ```sql
--- Paste your SQL code below for Question 2
+
+UPDATE Products
+SET quantity = quantity * 1.10;
+
 ```
 
 **Output:**
 
-![Output2](output.png)
+<img width="1223" height="712" alt="image" src="https://github.com/user-attachments/assets/fcf94a45-3107-4a7d-98e8-34736c0743b8" />
 
 **Question 3**
----
--- Paste Question 3 here
+
+Write a SQL query to reduce the reorder level by 30% where cost price is more than 50 and quantity in stock is less than 100 in the products table.
+
+Products Table 
+
+name          type       
+----------    ---------- 
+product_id     INT PRIMARY KEY        
+product_name   VARCHAR(10) 
+category       VARCHAR(50) 
+cost_price     DECIMAL(10) 
+sell_price     DECIMAL(10) 
+reorder_lvl    INT        
+quantity       INT        
+supplier_id    INT               
+For example:
 
 ```sql
--- Paste your SQL code below for Question 3
+
+UPDATE Products
+SET reorder_lvl = reorder_lvl * 0.70
+WHERE cost_price > 50 AND quantity < 100;
+
 ```
 
 **Output:**
 
-![Output3](output.png)
+<img width="1232" height="539" alt="image" src="https://github.com/user-attachments/assets/a49be8ce-ca9c-4617-9c61-3d47fd2cc273" />
+
 
 **Question 4**
 ---
