@@ -26,9 +26,14 @@ END;
 ```
 
 ## 1. Write a trigger to log every insertion into a table.
+
 **Steps:**
 - Create two tables: `employees` (for storing data) and `employee_log` (for logging the inserts).
 - Write an **AFTER INSERT** trigger on the `employees` table to log the new data into the `employee_log` table.
+
+
+**Expected Output:**
+- A new entry is added to the `employee_log` table each time a new record is inserted into the `employees` table.
 
 ### Code :
 
@@ -61,10 +66,9 @@ INSERT INTO employees (emp_id, emp_name, salary) VALUES (1, 'John', 5000);
 
 ```
 
-**Expected Output:**
-- A new entry is added to the `employee_log` table each time a new record is inserted into the `employees` table.
+### Output :
 
----
+<img width="1000" height="298" alt="image" src="https://github.com/user-attachments/assets/8dc762dd-82da-4662-a0f9-803018de323b" />
 
 ## 2. Write a trigger to prevent deletion of records from a sensitive table.
 **Steps:**
@@ -73,12 +77,34 @@ INSERT INTO employees (emp_id, emp_name, salary) VALUES (1, 'John', 5000);
 
 ### Code :
 
+
+**Expected Output:**
+- If an attempt is made to delete a record from `sensitive_data`, an error message is raised, e.g., `ERROR: Deletion not allowed on this table.`
+
 ```pl/sql
+
+SET SERVEROUTPUT ON;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE employee_log CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE employees CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE sensitive_data CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE products CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE customer_orders CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE audit_log CASCADE CONSTRAINTS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
 
 CREATE TABLE sensitive_data (
   data_id NUMBER,
   info VARCHAR2(100)
 );
+/
+
+INSERT INTO sensitive_data VALUES (1, 'Top Secret Info');
+COMMIT;
 
 CREATE OR REPLACE TRIGGER trg_prevent_delete
 BEFORE DELETE ON sensitive_data
@@ -87,24 +113,51 @@ BEGIN
   RAISE_APPLICATION_ERROR(-20001, 'Deletion not allowed on this table.');
 END;
 /
-DELETE FROM sensitive_data WHERE data_id = 1;
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('===== TEST DELETE FROM SENSITIVE_DATA =====');
+  BEGIN
+    DELETE FROM sensitive_data WHERE data_id = 1;
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE(SQLERRM);
+  END;
+END;
 /
 
 ```
 
-**Expected Output:**
-- If an attempt is made to delete a record from `sensitive_data`, an error message is raised, e.g., `ERROR: Deletion not allowed on this table.`
+### Output :
 
----
+<img width="1000" height="331" alt="image" src="https://github.com/user-attachments/assets/7219702e-cc58-4c06-b852-cbe4cb60cfab" />
+
 
 ## 3. Write a trigger to automatically update a `last_modified` timestamp.
 **Steps:**
 - Add a `last_modified` column to the `products` table.
 - Write a **BEFORE UPDATE** trigger on the `products` table to set the `last_modified` column to the current timestamp whenever an update occurs.
 
+
+**Expected Output:**
+- The `last_modified` column in the `products` table is updated automatically to the current date and time when any record is updated.
+
 ### Code :
 
 ```pl/sql
+
+SET SERVEROUTPUT ON;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE employee_log CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE employees CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE sensitive_data CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE products CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE customer_orders CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE audit_log CASCADE CONSTRAINTS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
 
 CREATE TABLE products (
   product_id NUMBER,
@@ -113,6 +166,10 @@ CREATE TABLE products (
   last_modified DATE
 );
 
+
+INSERT INTO products VALUES (1, 'Laptop', 1000, NULL);
+COMMIT;
+
 CREATE OR REPLACE TRIGGER trg_update_last_modified
 BEFORE UPDATE ON products
 FOR EACH ROW
@@ -120,15 +177,24 @@ BEGIN
   :NEW.last_modified := SYSDATE;
 END;
 /
-UPDATE products SET price = 200 WHERE product_id = 1;
+
+UPDATE products SET price = 1200 WHERE product_id = 1;
+COMMIT;
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('===== PRODUCTS TABLE =====');
+  FOR r IN (SELECT * FROM products) LOOP
+    DBMS_OUTPUT.PUT_LINE(r.product_id || ' - ' || r.product_name || ' - ' || r.price || ' - ' || r.last_modified);
+  END LOOP;
+END;
 /
 
 ```
 
-**Expected Output:**
-- The `last_modified` column in the `products` table is updated automatically to the current date and time when any record is updated.
+### Output :
 
----
+<img width="998" height="295" alt="image" src="https://github.com/user-attachments/assets/f8fb4b92-979c-4b16-b3a6-6c4f4d3a16c3" />
+
 
 ## 4. Write a trigger to keep track of the number of updates made to a table.
 **Steps:**
@@ -137,7 +203,25 @@ UPDATE products SET price = 200 WHERE product_id = 1;
 
 ### Code :
 
+
+**Expected Output:**
+- The `audit_log` table will maintain a count of how many updates have been made to the `customer_orders` table.
+
 ```pl/sql
+
+SET SERVEROUTPUT ON;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE employee_log CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE employees CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE sensitive_data CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE products CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE customer_orders CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE audit_log CASCADE CONSTRAINTS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
 
 CREATE TABLE customer_orders (
   order_id NUMBER,
@@ -145,12 +229,16 @@ CREATE TABLE customer_orders (
   order_total NUMBER
 );
 
+
 CREATE TABLE audit_log (
   id NUMBER GENERATED ALWAYS AS IDENTITY,
   update_count NUMBER
 );
 
+
 INSERT INTO audit_log (update_count) VALUES (0);
+INSERT INTO customer_orders VALUES (1, 'Alice', 300);
+COMMIT;
 
 CREATE OR REPLACE TRIGGER trg_count_updates
 AFTER UPDATE ON customer_orders
@@ -159,15 +247,24 @@ BEGIN
   UPDATE audit_log SET update_count = update_count + 1 WHERE id = 1;
 END;
 /
-UPDATE customer_orders SET order_total = 500 WHERE order_id = 1;
+
+UPDATE customer_orders SET order_total = 400 WHERE order_id = 1;
+COMMIT;
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('===== AUDIT_LOG TABLE =====');
+  FOR r IN (SELECT * FROM audit_log) LOOP
+    DBMS_OUTPUT.PUT_LINE('Update Count: ' || r.update_count);
+  END LOOP;
+END;
 /
 
 ```
 
-**Expected Output:**
-- The `audit_log` table will maintain a count of how many updates have been made to the `customer_orders` table.
+### Output :
 
----
+<img width="996" height="309" alt="image" src="https://github.com/user-attachments/assets/8549a569-51d7-41aa-8081-dd404952e85a" />
+
 
 ## 5. Write a trigger that checks a condition before allowing insertion into a table.
 **Steps:**
@@ -175,9 +272,34 @@ UPDATE customer_orders SET order_total = 500 WHERE order_id = 1;
 - If the condition is not met, raise an error to prevent the insert.
 
 
+
+**Expected Output:**
+- If the inserted salary in the `employees` table is below the condition (e.g., salary < 3000), the insert operation is blocked, and an error message is raised, such as: `ERROR: Salary below minimum threshold.`
+
 ### Code :
 
 ```pl/sql
+
+SET SERVEROUTPUT ON;
+
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE employee_log CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE employees CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE sensitive_data CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE products CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE customer_orders CASCADE CONSTRAINTS';
+  EXECUTE IMMEDIATE 'DROP TABLE audit_log CASCADE CONSTRAINTS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+
+CREATE TABLE employees (
+  emp_id NUMBER,
+  emp_name VARCHAR2(50),
+  salary NUMBER
+);
+/
 
 CREATE OR REPLACE TRIGGER trg_check_salary
 BEFORE INSERT ON employees
@@ -188,14 +310,32 @@ BEGIN
   END IF;
 END;
 /
-INSERT INTO employees (emp_id, emp_name, salary) VALUES (2, 'Jane', 2500);
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('===== TEST SALARY VALIDATION =====');
+  BEGIN
+    INSERT INTO employees (emp_id, emp_name, salary) VALUES (2, 'Jane', 2500);
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE(SQLERRM);
+  END;
+END;
+/
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('===== EMPLOYEES TABLE =====');
+  FOR r IN (SELECT * FROM employees) LOOP
+    DBMS_OUTPUT.PUT_LINE(r.emp_id || ' - ' || r.emp_name || ' - ' || r.salary);
+  END LOOP;
+END;
 /
 
 ```
 
-**Expected Output:**
-- If the inserted salary in the `employees` table is below the condition (e.g., salary < 3000), the insert operation is blocked, and an error message is raised, such as: `ERROR: Salary below minimum threshold.`
+### Output : 
+
 
 ## RESULT
 Thus, the PL/SQL trigger programs were written and executed successfully.
+
 
