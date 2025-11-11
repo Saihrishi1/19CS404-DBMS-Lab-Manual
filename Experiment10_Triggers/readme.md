@@ -319,6 +319,9 @@ BEGIN
     WHEN OTHERS THEN
       DBMS_OUTPUT.PUT_LINE(SQLERRM);
   END;
+
+  DBMS_OUTPUT.PUT_LINE('===== TEST SUCCESSFUL INSERT =====');
+  INSERT INTO employees (emp_id, emp_name, salary) VALUES (3, 'John', 4000);
 END;
 /
 
@@ -334,8 +337,11 @@ END;
 
 ### Output : 
 
+<img width="998" height="417" alt="image" src="https://github.com/user-attachments/assets/f3aa460e-f58f-421d-9eaa-2a3dd4906fa4" />
+
 
 ## RESULT
 Thus, the PL/SQL trigger programs were written and executed successfully.
+
 
 
